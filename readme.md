@@ -8,6 +8,11 @@
 3. 编写文章，根据业务类型勾选能够看到此文章的用户分组
 4. 完成并登录相应帐号进行测试，查看是否正确按照用户分组显示文章
 
+#联系
 
+> 主页: [译邻](http://strongme.cn)
+> 分站：[Shareagle](http://shareagle.com)
+> 微博：[@奔跑的阿水哥](http://www.weibo.com/strongwalter)
+> 邮件：[strongwalter2014@gmail.com](strongwalter2014@gmail.com)
 
 
