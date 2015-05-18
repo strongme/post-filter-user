@@ -59,6 +59,10 @@ function pfu_create_user_group_table(){
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
     dbDelta($sql);
+
+    //默认添加一条游客记录
+    $sql ="INSERT INTO $table_name(name,description) VALUES('游客','即未登录的所有用户')";
+    $wpdb->get_results($sql);
 }
 
 /*
