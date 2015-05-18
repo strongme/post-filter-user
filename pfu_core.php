@@ -186,24 +186,27 @@ function pfu_save_user_group_in_post($post_id) {
 add_action( 'pre_get_posts', 'pfu_post_filter_by_user_group' );
 function pfu_post_filter_by_user_group($query) {
 	$user_id = get_current_user_id();
-	if(is_super_admin( $user_id )) return;
-	if(is_user_logged_in()) {
-		//如果登录则根据用户所在分组显示
-		$current_user_groups = get_user_meta( $user_id, 'user_group' );
-		$query->set('meta_query',array(
-			array(
-				'key' => 'user_group',
-				'value' => $current_user_groups,
-				'compare' => 'IN'
-			)
-		));
+	if(!is_super_admin( $user_id ))  {
+		if(is_user_logged_in()) {
+			//如果登录则根据用户所在分组显示
+			$current_user_groups = get_user_meta( $user_id, 'user_group' );
+			$query->set('meta_query',array(
+				array(
+					'key' => 'user_group',
+					'value' => $current_user_groups,
+					'compare' => 'IN'
+				)
+			));
 
-	}else {
-		//未登录则只显示游客允许显示的内容，1为游客
-		$query->set('meta_key','user_group');
-		$query->set('meta_value', '1' );
+		}else {
+			//未登录则只显示游客允许显示的内容，1为游客
+			$query->set('meta_key','user_group');
+			$query->set('meta_value', '1' );
+		}
 	}
+	$query->set('post_type','post');
 	return $query;
+
 }
 
 
