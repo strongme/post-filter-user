@@ -60,7 +60,7 @@ function pfu_create_user_group_table(){
 
     dbDelta($sql);
 
-    $sql_exist = "SELECT COUNT(id) count FROM $table_name WHERE name = '$name'";
+    $sql_exist = "SELECT COUNT(id) count FROM $table_name WHERE name = '游客'";
 	$is_exist = $wpdb->get_results($sql_exist);
 	if($is_exist[0]->count == '0') {
 		$sql_youke = "INSERT INTO $table_name(name,description) VALUES('游客','即未登录的所有用户');";
