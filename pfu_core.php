@@ -185,10 +185,11 @@ function pfu_save_user_group_in_post($post_id) {
 */
 add_action( 'pre_get_posts', 'pfu_post_filter_by_user_group' );
 function pfu_post_filter_by_user_group($query) {
+	
 	$user_id = get_current_user_id();
-	if(!is_super_admin( $user_id ))  {
-		$query->set('post_type','post');
+	if(!is_super_admin( $user_id ) && $query->is_main_query())  {
 		if(is_user_logged_in()) {
+			// $query->set('post_type','post');
 			//如果登录则根据用户所在分组显示
 			$current_user_groups = get_user_meta( $user_id, 'user_group' );
 			$query->set('meta_query',array(
@@ -205,7 +206,6 @@ function pfu_post_filter_by_user_group($query) {
 			$query->set('meta_value', '1' );
 		}
 	}
-
 	return $query;
 
 }
