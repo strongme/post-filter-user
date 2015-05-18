@@ -59,13 +59,6 @@ function pfu_create_user_group_table(){
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
     dbDelta($sql);
-
-    $sql_exist = "SELECT COUNT(id) count FROM $table_name WHERE name = '游客'";
-	$is_exist = $wpdb->get_results($sql_exist);
-	if($is_exist[0]->count == '0') {
-		$sql_youke = "INSERT INTO $table_name(name,description) VALUES('游客','即未登录的所有用户');";
-		$wpdb->get_results($sql_youke);
-	}
 }
 
 /*
@@ -73,7 +66,14 @@ function pfu_create_user_group_table(){
 */
 add_action( "_admin_menu", "pfu_init_menu");	
 function pfu_init_menu() {
-
+	global $wpdb;
+    $table_name =PFU_TABLE_GROUP_NAME; 
+	$sql_exist = "SELECT COUNT(id) count FROM $table_name WHERE name = '游客'";
+	$is_exist = $wpdb->get_results($sql_exist);
+	if($is_exist[0]->count == '0') {
+		$sql_youke = "INSERT INTO $table_name(name,description) VALUES('游客','即未登录的所有用户');";
+		$wpdb->get_results($sql_youke);
+	}
 	// add_menu_page( "分级可视化", "分级可视化", "manage_options", __FILE__, "post_filter_user_group_list" );
 	global $user_level;
 	if(/*$user_level >= 5*/current_user_can('create_users')) {
