@@ -55,11 +55,17 @@ function pfu_create_user_group_table(){
     name   varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
     description  varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci
     );";
-    $sql .= "INSERT INTO $table_name(name,description) VALUES('游客','即未登录的所有用户');";
+    // $sql .= "INSERT INTO $table_name(name,description) VALUES('游客','即未登录的所有用户');";
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
     dbDelta($sql);
 
+    $sql_exist = "SELECT COUNT(id) count FROM $table_name WHERE name = '$name'";
+	$is_exist = $wpdb->get_results($sql_exist);
+	if($is_exist[0]->count == '0') {
+		$sql_youke = "INSERT INTO $table_name(name,description) VALUES('游客','即未登录的所有用户');";
+		$wpdb->get_results($sql_youke);
+	}
 }
 
 /*
