@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: 分级可视化
-Plugin URI: http://strongme.cn
+Plugin URI: https://github.com/strongme/post-filter-user
 Description: 根据用户的分组类型，进行文章显示的过来
 Version: 1.0
 Author: Strongme
