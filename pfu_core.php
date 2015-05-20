@@ -180,31 +180,61 @@ function pfu_save_user_group_in_post($post_id) {
 }	
 
 
+
+/*
+	该过滤器位于nav-menu.php 
+*/
+add_filter( 'wp_edit_nav_menu_walker', 'custom_nav_edit_walker',10,2 );   
+function custom_nav_edit_walker($walker,$menu_id) {
+	require_once('class-pfu-walker-nav-menu-edit.php');   
+    return 'PFU_Walker_Nav_Menu_Edit';//新类名   
+}  
+
+/*
+	更新菜单添加钩子保存自定义用户分组字段
+*/
+add_action( 'wp_update_nav_menu_item', 'pfu_update_nav_menu',10, 3);	
+function pfu_update_nav_menu($menu_id, $menu_item_db_id, $args) {
+	if ( is_array($_REQUEST['user_group_'.$menu_item_db_id]) ) {
+		$user_groups =   $_REQUEST['user_group_'.$menu_item_db_id];
+		delete_post_meta( $menu_item_db_id, 'user_group');
+		foreach ($user_groups as $key => $value) {
+			add_post_meta( $menu_item_db_id, 'user_group', $value);
+		} 
+    }   
+}
+
+
 /*
 	添加过滤文章钩子
 */
 add_action( 'pre_get_posts', 'pfu_post_filter_by_user_group' );
 function pfu_post_filter_by_user_group($query) {
-	
-	$user_id = get_current_user_id();
-	if(!is_super_admin( $user_id ) && $query->is_main_query())  {
-		if(is_user_logged_in()) {
-			// $query->set('post_type','post');
-			//如果登录则根据用户所在分组显示
-			$current_user_groups = get_user_meta( $user_id, 'user_group' );
-			$query->set('meta_query',array(
-				array(
-					'key' => 'user_group',
-					'value' => $current_user_groups,
-					'compare' => 'IN'
-				)
-			));
-
-		}else {
-			//未登录则只显示游客允许显示的内容，1为游客
+	if(is_user_logged_in()) {
+		$user_id = get_current_user_id();
+		//处理文章查询
+		if(!is_super_admin( $user_id )) {
+			//文章过滤
+			// if($query->is_main_query()) {
+				//如果登录则根据用户所在分组显示
+				$current_user_groups = get_user_meta( $user_id, 'user_group' );
+				$query->set('meta_query',array(
+					array(
+						'key' => 'user_group',
+						'value' => $current_user_groups,
+						'compare' => 'IN'
+					)
+				));	
+			// }
+		}
+		
+	}else {
+		// if($query->is_main_query()) {
 			$query->set('meta_key','user_group');
 			$query->set('meta_value', '1' );
-		}
+
+		// }
+
 	}
 	return $query;
 
